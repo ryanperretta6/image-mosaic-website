@@ -1,13 +1,13 @@
 import React from 'react';
-
+import UploadFile from './UploadFile';
 import '../App.css';
 
 function Home() {
-  return (
-    <div>
-      <h2>This is the Home page</h2>
-    </div>
-  );
+	return (
+		<div>
+			<UploadFile />
+		</div>
+	);
 }
 
 export default Home;
