@@ -4,13 +4,14 @@ import '../App.css';
 import ChangePassword from './ChangePassword';
 
 function Account() {
-  return (
-    <div>
-      <h2>Account Page</h2>
-      <ChangePassword />
-      <SignOutButton />
-    </div>
-  );
+	return (
+		<div>
+			<h1>Account Page</h1>
+			<h1>Your Art</h1>
+			<ChangePassword />
+			<SignOutButton />
+		</div>
+	);
 }
 
 export default Account;
