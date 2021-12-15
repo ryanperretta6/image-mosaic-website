@@ -35,19 +35,27 @@ def createUser(username):
 
 @application.route('/mosaic/<userID>', methods=['POST'])
 def mosaic(userID):
+    print(request.form.keys())
     imageID = uuid.uuid4()
-    content = request.json
+    content = request.form
     xPixels = int(content['xPixels'])
     yPixels = int(content['yPixels'])
     folder_photos = content['folder_photos']
     tile_size = (xPixels, yPixels)
-    main_photo_path = content['main_photo_path']
+    imgByteArr = content['uploadFile'].split(',')
+
+    # main_photo_path = content['main_photo_path']
 
     # main_photo = Image.open(main_photo_path)
     # imgByteArr = io.BytesIO()
     # main_photo.save(imgByteArr, format='png')
     # binary_main_photo = imgByteArr.getvalue()
-    # # print('input Image byte array', binary_main_photo)
+
+    # main_photo = Image.open()
+    # main_photo.save(imgByteArr, format='png')
+    binary_main_photo = imgByteArr.getvalue()
+
+    # print('input Image byte array', binary_main_photo)
 
     tiles, binary_folder_photos = [], []
     for file in glob.glob(folder_photos):
