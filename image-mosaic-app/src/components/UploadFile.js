@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import useHistory from 'react-router-dom';
 
 function UploadFile() {
 	const [uploadFile, setUploadFile] = useState();
 	const [uploadResponse, setUploadResponse] = useState();
+	const history = useHistory;
 
 	const submitForm = (event) => {
 		event.preventDefault();
@@ -27,6 +29,7 @@ function UploadFile() {
 
         POST`);
 			});
+		history.push('/inprogress');
 	};
 
 	return (
