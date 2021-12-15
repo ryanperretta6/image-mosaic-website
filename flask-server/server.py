@@ -59,7 +59,7 @@ def mosaic(userID):
     s3.upload_fileobj(io.BytesIO(mosaic), "output-mosaics", filename, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/jpeg'})
     fileURL = bucketURLBase + filename
 
-    client = MongoClient("mongodb+srv://lmcevoy:soH2UO3mLsaPH3wV@cluster0.qrgw0.mongodb.net/Cluster0?retryWrites=true&w=majority")
+    client = MongoClient("mongodb+srv://lmcevoy:soH2UO3mLsaPH3wV@cluster0.qrgw0.mongodb.net/Cluster0?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
     db = client.mosaics
     m = db.mosaic
 
