@@ -15,9 +15,14 @@ const NavigationAuth = () => {
     return (
         <nav className="navigation">
             <ul>
-                <li className="navLink">
+                <li>
                     <NavLink exact to="/" activeClassName="active">
                         Create Mosaic
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink exact to="/about" activeClassName="active">
+                        About our App
                     </NavLink>
                 </li>
                 {/* <li>
@@ -25,17 +30,15 @@ const NavigationAuth = () => {
 						Your images
 					</NavLink>
 				</li> */}
+                {/* <NavLink exact to="/inprogress" activeClassName="active">
+					In Progress
+				</NavLink> */}
                 <li>
-                    <NavLink exact to="/inprogress" activeClassName="active">
-                        In Progress
-                    </NavLink>
-                </li>
-                <li className="navLink">
                     <NavLink exact to="/account" activeClassName="active">
                         Account
                     </NavLink>
                 </li>
-                <li className="navLink">
+                <li>
                     <SignOutButton />
                 </li>
             </ul>
