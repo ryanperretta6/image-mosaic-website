@@ -11,7 +11,11 @@ function UploadFile() {
         const dataArray = new FormData();
         dataArray.append("uploadFile", uploadFile);
 
-        if (uploadFile === undefined) {
+        console.log(uploadFile[0].type);
+        if (
+            uploadFile === undefined ||
+            !uploadFile[0].type.startsWith("image")
+        ) {
             setUploadResponse(`Please submit an image file.`);
             return;
         }

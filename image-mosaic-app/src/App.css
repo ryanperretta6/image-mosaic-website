@@ -2,6 +2,10 @@
     text-align: center;
 }
 
+#root * {
+    font-family: Consolas, Arial, sans-serif;
+}
+
 .App-logo {
     height: 40vmin;
     pointer-events: none;
@@ -73,7 +77,6 @@
 }
 
 #appTitle {
-    font-family: Consolas, Arial, sans-serif;
     color: white;
 }
 
@@ -84,9 +87,23 @@
 .navigation li {
     display: inline;
     color: white;
-    font-family: Consolas, Arial, sans-serif;
     margin: 8px;
 }
 .navigation li:hover {
     text-decoration: underline;
+}
+
+#accountContainer h1 {
+    font-weight: bold;
+}
+
+#changePasswordUnavailable h2 {
+    font-style: italic;
+}
+
+#noImages {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid;
+    width: 20%;
 }
