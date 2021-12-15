@@ -1,6 +1,6 @@
 import React from "react";
 import "../App.css";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Account from "./Account";
 import CreateMosaic from "./CreateMosaic";
 import Navigation from "./Navigation";
@@ -16,6 +16,9 @@ function App() {
             <Router>
                 <div className="App">
                     <header className="App-header">
+                        <Link to="/">
+                            <h1 id="appTitle">Image Mosaic Creator</h1>
+                        </Link>
                         <Navigation />
                     </header>
                 </div>

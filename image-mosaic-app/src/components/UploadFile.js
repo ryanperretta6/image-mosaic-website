@@ -1,11 +1,24 @@
 import React, { useState } from "react";
 import axios from "axios";
-import useHistory from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function UploadFile() {
     const [uploadFile, setUploadFile] = useState();
     const [uploadResponse, setUploadResponse] = useState();
-    const history = useHistory;
+    const history = useHistory();
+
+    // https://stackoverflow.com/questions/9258932/how-to-convert-image-to-byte-array-using-javascript-only-to-store-image-on-sql-s
+    // function getBase64Image() {
+    //     p = document.getElementById("fileUpload").value;
+    //     img1.setAttribute("src", p);
+    //     canvas.width = img1.width;
+    //     canvas.height = img1.height;
+    //     var ctx = canvas.getContext("2d");
+    //     ctx.drawImage(img1, 0, 0);
+    //     var dataURL = canvas.toDataURL("image/png");
+    //     alert("from getbase64 function" + dataURL);
+    //     return dataURL;
+    // }
 
     const submitForm = (event) => {
         event.preventDefault();
@@ -32,13 +45,13 @@ function UploadFile() {
                 setUploadResponse(`File uploaded successfully
         
         POST`);
+                history.push("/inprogress");
             })
             .catch((error) => {
                 setUploadResponse(`File uploaded FAILED
 
         POST`);
             });
-        history.push("/inprogress");
     };
 
     return (
