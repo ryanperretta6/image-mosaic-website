@@ -5,7 +5,8 @@ import '../App.css';
 function InProgress() {
 	return (
 		<div>
-			<h2>This is the In Progress page</h2>
+			<h2>Your Image is in Progress</h2>
+			<p>You will receive a notification when it is done</p>
 		</div>
 	);
 }

@@ -25,6 +25,7 @@ function App() {
                 <PrivateRoute path="/account" component={Account} />
                 <Route path="/signin" component={SignIn} />
                 <Route path="/signup" component={SignUp} />
+                <Route path="/inprogress" component={InProgress} />
             </Router>
         </AuthProvider>
     );
