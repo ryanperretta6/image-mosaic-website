@@ -18,14 +18,19 @@ const NavigationAuth = () => {
 						Create Mosaic
 					</NavLink>
 				</li>
+				<li>
+					<NavLink exact to="/about" activeClassName="active">
+						About our App
+					</NavLink>
+				</li>
 				{/* <li>
 					<NavLink exact to="/home" activeClassName="active">
 						Your images
 					</NavLink>
 				</li> */}
-				<NavLink exact to="/inprogress" activeClassName="active">
+				{/* <NavLink exact to="/inprogress" activeClassName="active">
 					In Progress
-				</NavLink>
+				</NavLink> */}
 				<li>
 					<NavLink exact to="/account" activeClassName="active">
 						Account

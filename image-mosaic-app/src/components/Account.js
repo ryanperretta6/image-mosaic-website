@@ -36,7 +36,7 @@ const useStyles = makeStyles({
 function Account() {
 	const [userPictures, setUserPictures] = useState(undefined);
 	const classes = useStyles();
-	const card = null;
+	let card = null;
 
 	useEffect(
 		() => {

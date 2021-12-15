@@ -9,6 +9,7 @@ import SignUp from './SignUp';
 import { AuthProvider } from '../firebase/Auth';
 import PrivateRoute from './PrivateRoute';
 import InProgress from './InProgress';
+import About from './About'
 function App() {
 	return (
 		<AuthProvider>
@@ -24,6 +25,7 @@ function App() {
 				<Route path="/signin" component={SignIn} />
 				<Route path="/signup" component={SignUp} />
 				<Route path="/inprogress" component={InProgress} />
+				<Route path="/about" component={About}/>
 			</Router>
 		</AuthProvider>
 	);
