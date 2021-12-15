@@ -39,8 +39,6 @@ function UploadFile() {
             return;
         }
 
-        console.log(fileByteArray);
-
         dataArray.append("uploadFile", fileByteArray);
 
         axios
