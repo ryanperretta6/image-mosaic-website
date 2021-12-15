@@ -7,11 +7,32 @@ function UploadFile() {
 	const [uploadResponse, setUploadResponse] = useState();
 	const history = useHistory;
 
+	//readFile and getAsByteArray functions were borrowed from https://dilshankelsen.com/convert-file-to-byte-array/
+
+	function readFile(file){
+		return new Promise((resolve, reject) => {
+			// Create file reader
+			let reader = new FileReader()
+		
+			// Register event listeners
+			reader.addEventListener("loadend", e => resolve(e.target.result))
+			reader.addEventListener("error", reject)
+		
+			// Read file
+			reader.readAsArrayBuffer(file);
+		  })
+	}
+
+	async function getAsByteArray(file){
+		return new Unit8Array(await readFile(file));
+	}
+
 	const submitForm = (event) => {
 		event.preventDefault();
 
 		const dataArray = new FormData();
-		dataArray.append('uploadFile', uploadFile);
+		const fileByteArray = getAsByteArray(uploadFile)
+		dataArray.append('uploadFile', fileByteArray);
 
 		axios
 			.post('/', dataArray, {
