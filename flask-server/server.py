@@ -8,6 +8,8 @@ from botocore.exceptions import ClientError
 import os
 from pymongo import MongoClient
 from time import gmtime, strftime
+import glob
+import uuid
 
 ACCESS_KEY_ID = 'AKIATRUUVJ4RL6UU7DY5'
 SECRET_ACCESS_KEY = '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'
@@ -33,27 +35,39 @@ def createUser(username):
 
 @application.route('/mosaic/<userID>', methods=['POST'])
 def mosaic(userID):
+    imageID = uuid.uuid4()
     content = request.json
-    print(content)
     xPixels = int(content['xPixels'])
     yPixels = int(content['yPixels'])
+    folder_photos = content['folder_photos']
     tile_size = (xPixels, yPixels)
     main_photo_path = content['main_photo_path']
 
-    # main_photo = Image.open(main_photo_path)
-    # imgByteArr = io.BytesIO()
-    # main_photo.save(imgByteArr, format='png')
-    # imgByteArr = imgByteArr.getvalue()
-    # print('input Image byte array', imgByteArr)
+    main_photo = Image.open(main_photo_path)
+    imgByteArr = io.BytesIO()
+    main_photo.save(imgByteArr, format='png')
+    binary_main_photo = imgByteArr.getvalue()
+    # print('input Image byte array', binary_main_photo)
+
+    tiles, binary_folder_photos = [], []
+    for file in glob.glob(folder_photos):
+        tiles.append(file)
+        img = Image.open(file)
+        img = img.resize(tile_size)
+        imgByteArr = io.BytesIO()
+        img.save(imgByteArr, format='png')
+        binary_folder_photos.append(imgByteArr.getvalue())
+
+    print('type of binary folders', type(binary_folder_photos), type(binary_folder_photos[0]))
 
     mosaic = createMosaic(
-        main_photo_path=main_photo_path,
+        binary_main_photo=binary_main_photo,
         tile_size=tile_size,
+        binary_folder_photos=binary_folder_photos
     )
 
-    filename = strftime("%Y-%m-%d-%H-%M-%S", gmtime())
+    filename = f'{strftime("%Y-%m-%d-%H-%M-%S", gmtime())}-{userID}-{imageID}'
     bucketURLBase = 'https://output-mosaics.s3.amazonaws.com/'
-
 
     s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
     s3.upload_fileobj(io.BytesIO(mosaic), "output-mosaics", filename, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/jpeg'})
@@ -63,10 +77,13 @@ def mosaic(userID):
     db = client.mosaics
     m = db.mosaic
 
-    print(type(mosaic), type(io.BytesIO(mosaic)))
-    result = m.insert_one({"mosaic": mosaic, "mosaic-url": fileURL, 'userID': userID})
-    print('result', result)
-    print(f"One mosaic: {result.inserted_id}")
+    print(fileURL)
+
+    # MongoDB is timing out
+    
+    # result = m.insert_one({"mosaic-url": fileURL, 'userID': userID})
+    # print('result', result)
+    # print(f"One mosaic: {result.inserted_id}")
 
     return "<p>Mosaic DONE!</p>"
 

@@ -6,7 +6,6 @@ import io
 import os
 import shutil
 import boto3
-import urllib.request
 
 ACCESS_KEY_ID = 'AKIATRUUVJ4RL6UU7DY5'
 SECRET_ACCESS_KEY = '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'
@@ -23,41 +22,13 @@ def cleanupTiles(tiles_root):
     if os.path.isdir(tiles_root):
         shutil.rmtree(tiles_root, ignore_errors=True)
 
-def createMosaic(main_photo_path, tile_size):
+def createMosaic(binary_main_photo, tile_size, binary_folder_photos):
 
-    tiles_root = os.getcwd() + '/tiles'
-    base = 'https://mosaic-tiles-cs554.s3.amazonaws.com/'
-
-
-    def download_all_objects_in_folder():
-        s3_resource = boto3.resource('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
-        my_bucket = s3_resource.Bucket('mosaic-tiles-cs554')
-        objects = my_bucket.objects.filter(Prefix='lsd-minner/')
-        
-        i = 0
-        print('tiles_root: ', tiles_root)
-        for obj in objects:
-            if i != 0:
-                urllib.request.urlretrieve(base + obj.key, f"{tiles_root}/{i}.png")
-            i += 1
-
-    download_all_objects_in_folder()
-
-    # Get all tiles
-    tile_paths = []
-    status('getting all tiles')
-    for file in glob.glob(tiles_root + '/*'):
-        tile_paths.append(file)
-
-    print('tile_paths', tile_paths)
-
-    # Import and resize all tiles
     tiles = []
-    status('resizing all tiles')
-    for path in tile_paths:
-        tile = Image.open(path)
-        tile = tile.resize(tile_size)
-        tiles.append(tile)
+    for file in binary_folder_photos:
+        img = Image.open(io.BytesIO(file))
+        tiles.append(img)
+
 
     # Calculate dominant color
     colors = []
@@ -67,7 +38,7 @@ def createMosaic(main_photo_path, tile_size):
         colors.append(mean_color)
 
     # Pixelate (resize) main photo
-    main_photo = Image.open(main_photo_path)
+    main_photo = Image.open(io.BytesIO(binary_main_photo))
 
     width = int(np.round(main_photo.size[0] / tile_size[0]))
     height = int(np.round(main_photo.size[1] / tile_size[1]))
@@ -79,6 +50,7 @@ def createMosaic(main_photo_path, tile_size):
     closest_tiles = np.zeros((width, height), dtype=np.uint32)
 
     status('finding closest tile photo for every pixel')
+
     for i in range(width):
         for j in range(height):
             close = (resized_photo.getpixel((i, j)))
@@ -91,6 +63,8 @@ def createMosaic(main_photo_path, tile_size):
     # Create an output image
     output = Image.new('RGB', main_photo.size)
 
+    status('instantiataed output mosaic')
+
     # Draw tiles
     for i in range(width):
         for j in range(height):
@@ -102,9 +76,9 @@ def createMosaic(main_photo_path, tile_size):
             output.paste(tiles[index], (x, y))
 
     imgByteArr = io.BytesIO()
-    print(imgByteArr)
     output.save(imgByteArr, format='png')
     imgByteArr = imgByteArr.getvalue()
 
+    status('output mosaic was computed')
 
     return imgByteArr
