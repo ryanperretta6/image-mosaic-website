@@ -24,7 +24,7 @@ function UploadFile() {
 	}
 
 	async function getAsByteArray(file){
-		return new Unit8Array(await readFile(file));
+		return new Uint8Array(await readFile(file));
 	}
 
 	const submitForm = (event) => {
