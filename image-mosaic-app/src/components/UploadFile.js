@@ -27,17 +27,19 @@ function UploadFile() {
         return new Uint8Array(await readFile(file));
     }
 
-    const submitForm = (event) => {
+    const submitForm = async (event) => {
         event.preventDefault();
 
         const dataArray = new FormData();
         let fileByteArray;
         try {
-            fileByteArray = getAsByteArray(uploadFile[0]);
+            fileByteArray = await getAsByteArray(uploadFile[0]);
         } catch (e) {
             console.log("Error get byteArray");
             return;
         }
+
+        console.log(fileByteArray);
 
         dataArray.append("uploadFile", fileByteArray);
 
