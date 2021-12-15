@@ -31,7 +31,14 @@ function UploadFile() {
 		event.preventDefault();
 
 		const dataArray = new FormData();
-		const fileByteArray = getAsByteArray(uploadFile)
+		let fileByteArray;
+		try{
+			fileByteArray = getAsByteArray(uploadFile[0]);
+		}catch(e){
+			console.log("Error get byteArray");
+			return;
+		}
+		
 		dataArray.append('uploadFile', fileByteArray);
 
 		axios
