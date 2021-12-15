@@ -1,46 +1,54 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 function UploadFile() {
-	const [uploadFile, setUploadFile] = useState();
-	const [uploadResponse, setUploadResponse] = useState();
+    const [uploadFile, setUploadFile] = useState();
+    const [uploadResponse, setUploadResponse] = useState();
 
-	const submitForm = (event) => {
-		event.preventDefault();
+    const submitForm = (event) => {
+        event.preventDefault();
 
-		const dataArray = new FormData();
-		dataArray.append('uploadFile', uploadFile);
+        const dataArray = new FormData();
+        dataArray.append("uploadFile", uploadFile);
 
-		axios
-			.post('/', dataArray, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
-			})
-			.then((response) => {
-				setUploadResponse(`File uploaded successfully
+        if (uploadFile === undefined) {
+            setUploadResponse(`Please submit an image file.`);
+            return;
+        }
+
+        axios
+            .post("/", dataArray, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                setUploadResponse(`File uploaded successfully
         
         POST`);
-			})
-			.catch((error) => {
-				setUploadResponse(`File uploaded FAILED
+            })
+            .catch((error) => {
+                setUploadResponse(`File uploaded FAILED
 
         POST`);
-			});
-	};
+            });
+    };
 
-	return (
-		<div className="App">
-			<form onSubmit={submitForm}>
-				<br />
-				<input type="file" onChange={(e) => setUploadFile(e.target.files)} />
-				<br />
-				<input type="submit" />
-			</form>
-			<hr />
-			<pre>{uploadResponse}</pre>
-		</div>
-	);
+    return (
+        <div className="App">
+            <form onSubmit={submitForm}>
+                <br />
+                <input
+                    type="file"
+                    onChange={(e) => setUploadFile(e.target.files)}
+                />
+                <br />
+                <input type="submit" />
+            </form>
+            <hr />
+            <pre>{uploadResponse}</pre>
+        </div>
+    );
 }
 
 export default UploadFile;
