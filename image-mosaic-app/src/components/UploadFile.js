@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import useHistory from "react-router-dom";
 
 function UploadFile() {
     const [uploadFile, setUploadFile] = useState();
     const [uploadResponse, setUploadResponse] = useState();
+    const history = useHistory;
 
     const submitForm = (event) => {
         event.preventDefault();
@@ -11,7 +13,7 @@ function UploadFile() {
         const dataArray = new FormData();
         dataArray.append("uploadFile", uploadFile);
 
-        console.log(uploadFile[0].type);
+        // check if uploaded file is an image file
         if (
             uploadFile === undefined ||
             !uploadFile[0].type.startsWith("image")
@@ -36,6 +38,7 @@ function UploadFile() {
 
         POST`);
             });
+        history.push("/inprogress");
     };
 
     return (
