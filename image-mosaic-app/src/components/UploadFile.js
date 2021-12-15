@@ -39,12 +39,13 @@ function UploadFile() {
             return;
         }
 
-        console.log(fileByteArray);
-
         dataArray.append("uploadFile", fileByteArray);
+        dataArray.append("xPixels", 10);
+        dataArray.append("yPixels", 10);
+        dataArray.append("folder_photos", "");
 
         axios
-            .post("/", dataArray, {
+            .post("http://localhost:5000/mosaic/abcd123", dataArray, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
