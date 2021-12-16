@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../firebase/Auth";
+import imageCheck from "../imageCheck";
 
 function UploadFile() {
     const { currentUser } = useContext(AuthContext);
