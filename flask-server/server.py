@@ -26,7 +26,7 @@ def createUser(username):
     # db = client.test
     # client = MongoClient("mongodb://localhost:27017")
     # print("client", client)
-    client = MongoClient("mongodb+srv://lmcevoy:soH2UO3mLsaPH3wV@cluster0.qrgw0.mongodb.net/Cluster0?retryWrites=true&w=majority")
+    client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
     db = client.mosaics
     u = db.user
     result = u.insert_one({"username": username})
