@@ -3,7 +3,6 @@ import SignOutButton from "./SignOut";
 import "../App.css";
 import ChangePassword from "./ChangePassword";
 import { AuthContext } from "../firebase/Auth";
-import { ClientContext} from "../redis/Client";
 
 import {
     makeStyles,
@@ -55,21 +54,12 @@ function Account() {
     const classes = useStyles();
     const { currentUser } = useContext(AuthContext);
     let card = null;
-	const {client} = useContext(ClientContext);
 
 	
 
     useEffect(() => {
         console.log("useEffect fired");
         async function fetchImages() {
-			try{
-				if(await client.existsAsync(currentUser.uid)){
-					setUserPictures(await client.getAsync(currentUser.uid));
-					return;
-				}
-			}catch(e){
-				console.log(`Error with cache: ${e}`);
-			}
 			
             // const uri =
             //     "mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
@@ -141,16 +131,12 @@ function Account() {
                     let pics = [];
                     for (let key of keys) pics.push(response.data[key]);
                     setUserPictures(pics);
-					try{
-						await client.setAsync(currentUser.uid);
-					}catch(e){
-						console.log(`Error setting the cache: ${e}`);
-					}
                 })
                 .catch((error) => {
                     console.log(error);
                     console.log("BOO");
                 });
+				
         }
         fetchImages();
     }, [currentUser.uid]);
