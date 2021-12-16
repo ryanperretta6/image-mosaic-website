@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import SignOutButton from "./SignOut";
 import "../App.css";
 import ChangePassword from "./ChangePassword";
+import {MongoClient} from "mongodb";
 import {
     makeStyles,
     Card,
-    CardContent,
+    //CardContent,
     CardMedia,
-    Typography,
-    CardHeader,
+    //Typography,
+    //CardHeader,
     Grid,
 } from "@material-ui/core";
 
@@ -49,7 +50,23 @@ function Account() {
 
     useEffect(() => {
         console.log("useEffect fired");
-        setUserPictures();
+		async function fetchImages(){
+			const uri = "mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000;
+			const client = new MongoClient(uri);
+			try{
+				await client.connect();
+			}catch(e){
+				console.log("Could not connect to Mongo Database");
+				return;
+			}
+			const db = client.db("CS554Final");
+			const collection = db.collection("Pictures");
+
+			const pics = await collection.find({userID: ""}).toArray();
+
+		}
+        fetchImages();
+
     }, []);
 
     const buildCard = (pic) => {
