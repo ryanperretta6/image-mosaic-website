@@ -84,43 +84,6 @@ function Account() {
 				setUserPictures(arr);
 				client.close();
 			});*/
-<<<<<<< HEAD
-			try{
-				await client.connect();
-			}catch(e){
-				console.log(`Could not connect to Mongo Database: ${e}`);
-				return;
-			}
-			const db = client.db("CS554Final");
-			const collection = db.collection("Pictures");
-
-			let pics;
-			try{
-				pics = await collection.find({userID: currentUser.uid}).toArray();
-			}catch(e){
-				console.log("Could not access collection");
-				return;
-			}
-
-			let arr = [];
-
-			for(let pic of pics){
-				//const mosiac = pic.mosiac-url (* Need to get mosiac from S3 bucket using url*);
-				let mosaicObj = {
-					id: pic._id,
-					image: pic.url
-				};
-				arr.push(mosaicObj);
-			}
-			setUserPictures(arr);
-			try{
-				await client.close();
-			}catch(e){
-				console.log("Could not close client");
-				return;
-			}
-		}
-=======
             // try{
             // 	await client.connect();
             // }catch(e){
@@ -172,7 +135,6 @@ function Account() {
                     console.log("BOO");
                 });
         }
->>>>>>> ryan
         fetchImages();
     }, [currentUser.uid]);
 
