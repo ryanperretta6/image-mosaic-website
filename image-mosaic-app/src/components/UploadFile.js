@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { AuthContext } from "../firebase/Auth";
 
 function UploadFile() {
+    const { currentUser } = useContext(AuthContext);
     const [uploadFile, setUploadFile] = useState();
     const [uploadResponse, setUploadResponse] = useState();
     const history = useHistory();
@@ -45,11 +47,15 @@ function UploadFile() {
         dataArray.append("folder_photos", "");
 
         axios
-            .post("http://localhost:5000/mosaic/abcd123", dataArray, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
+            .post(
+                `http://localhost:5000/mosaic/${currentUser.uid}`,
+                dataArray,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            )
             .then((response) => {
                 setUploadResponse(`File uploaded successfully
         

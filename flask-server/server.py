@@ -35,7 +35,6 @@ def createUser(username):
 
 @application.route('/mosaic/<userID>', methods=['POST'])
 def mosaic(userID):
-    print(request.form.keys())
     imageID = uuid.uuid4()
     content = request.form
     xPixels = int(content['xPixels'])
