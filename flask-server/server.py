@@ -10,17 +10,17 @@ from pymongo import MongoClient
 from time import gmtime, strftime
 import glob
 import uuid
+from flask_cors import CORS, cross_origin
 
 ACCESS_KEY_ID = 'AKIATRUUVJ4RL6UU7DY5'
 SECRET_ACCESS_KEY = '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'
 
 application = Flask(__name__)
-
-@application.route('/')
-def hello_world():
-    return "<p>Hello, World!</p>"
+cors = CORS(application)
+application.config['CORS_HEADERS'] = 'Content-Type'
 
 @application.route('/user/<username>', methods=['POST'])
+@cross_origin()
 def createUser(username):
     print(username)
     # db = client.test
@@ -33,7 +33,37 @@ def createUser(username):
     print(f"{username}'s ID: {result.inserted_id}")
     return "<p>User DONE!</p>"
 
+@application.route('/image/<userID>', methods=['GET'])
+@cross_origin()
+def getImage(userID):
+    print(f"getting images for user: {userID}")
+    # connect to the mongo db
+    client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
+    print(client.server_info().keys())
+    db = client.CS554Final
+    pictures = db.get_collection('Pictures')
+    # query for mosaics belonging to this user
+    results = pictures.find({"userID": userID}, {"_id": 0, "url": 1})
+    # get the images from the s3 bucket
+    s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
+    # TEMPORARY v v
+    s3urls = {}
+    count = 0
+    # ^^ TEMPORARY
+    for obj in results:
+        # TEMPORARY CODE FOR TESTING
+        s3urls[count] = obj['url']
+        count += 1
+        # END TEMPORARY
+        # get the s3 url from the result
+        s3url = obj['url']
+        print(f"NOTE: Getting image at URL {s3url} from s3.")
+        # NEED TO GET THE IMAGE FROM THE S3 BUCKET
+
+    return s3urls
+
 @application.route('/mosaic/<userID>', methods=['POST'])
+@cross_origin()
 def mosaic(userID):
     imageID = uuid.uuid4()
     content = request.form
