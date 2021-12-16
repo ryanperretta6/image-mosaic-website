@@ -19,18 +19,18 @@ application = Flask(__name__)
 cors = CORS(application)
 application.config['CORS_HEADERS'] = 'Content-Type'
 
-@application.route('/user/<username>', methods=['POST'])
+@application.route('/user/<userID>', methods=['POST'])
 @cross_origin()
-def createUser(username):
-    print(username)
+def createUser(userID):
+    print(userID)
     # db = client.test
     # client = MongoClient("mongodb://localhost:27017")
     # print("client", client)
     client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
-    db = client.mosaics
-    u = db.user
-    result = u.insert_one({"username": username})
-    print(f"{username}'s ID: {result.inserted_id}")
+    db = client.CS554Final
+    u = db.Users
+    result = u.insert_one({"userID": userID})
+    print(f"{userID}'s ID: {result.inserted_id}")
     return "<p>User DONE!</p>"
 
 @application.route('/image/<userID>', methods=['GET'])
@@ -41,7 +41,7 @@ def getImage(userID):
     client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
     print(client.server_info().keys())
     db = client.CS554Final
-    pictures = db.get_collection('Pictures')
+    pictures = db.Pictures
     # query for mosaics belonging to this user
     results = pictures.find({"userID": userID}, {"_id": 0, "url": 1})
     # get the images from the s3 bucket

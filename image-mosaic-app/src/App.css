@@ -107,3 +107,9 @@
     border: 1px solid;
     width: 20%;
 }
+
+.imgModal img {
+    border-radius: 15px;
+    height: 80%;
+    width: 80%;
+}

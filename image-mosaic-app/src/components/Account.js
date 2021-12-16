@@ -12,6 +12,9 @@ import {
     //Typography,
     //CardHeader,
     Grid,
+    CardActionArea,
+    Modal,
+    Button,
 } from "@material-ui/core";
 import axios from "axios";
 
@@ -47,6 +50,8 @@ const useStyles = makeStyles({
 
 function Account() {
     const [userPictures, setUserPictures] = useState(undefined);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalImageSrc, setModalImageSrc] = useState();
     const classes = useStyles();
     const { currentUser } = useContext(AuthContext);
     let card = null;
@@ -136,15 +141,22 @@ function Account() {
     const buildCard = (pic) => {
         return (
             <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={pic.id}>
-                <Card className={classes.card} variant="outlined">
-                    <CardMedia
-                        className={classes.media}
-                        component="img"
-                        // image={pic.image}
-                        src={pic} // CHANGE this when the real images are here
-                        title="Mosiac image"
-                    />
-                </Card>
+                <CardActionArea
+                    onClick={() => {
+                        setModalOpen(true);
+                        setModalImageSrc(pic);
+                    }}
+                >
+                    <Card className={classes.card} variant="outlined">
+                        <CardMedia
+                            className={classes.media}
+                            component="img"
+                            // image={pic.image}
+                            src={pic} // CHANGE this when the real images are here
+                            title="Mosiac image"
+                        />
+                    </Card>
+                </CardActionArea>
             </Grid>
         );
     };
@@ -161,7 +173,13 @@ function Account() {
             ) : (
                 <p id="noImages">No images uploaded.</p>
             )}
-
+            <Modal
+                className="imgModal"
+                open={modalOpen}
+                onClick={() => setModalOpen(false)}
+            >
+                <img src={modalImageSrc} />
+            </Modal>
             <ChangePassword />
             <SignOutButton />
         </div>
