@@ -81,17 +81,15 @@ def mosaic(userID):
     s3.upload_fileobj(io.BytesIO(mosaic), "output-mosaics", filename, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/jpeg'})
     fileURL = bucketURLBase + filename
 
-    client = MongoClient("mongodb+srv://lmcevoy:soH2UO3mLsaPH3wV@cluster0.qrgw0.mongodb.net/Cluster0?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
-    db = client.mosaics
-    m = db.mosaic
-
-    print(fileURL)
+    client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
+    db = client.CS554Final
+    m = db.Pictures
 
     # MongoDB is timing out
     
-    # result = m.insert_one({"mosaic-url": fileURL, 'userID': userID})
-    # print('result', result)
-    # print(f"One mosaic: {result.inserted_id}")
+    result = m.insert_one({"mosaic-url": fileURL, 'userID': userID})
+    print('result', result)
+    print(f"One mosaic: {result.inserted_id}")
 
     return "<p>Mosaic DONE!</p>"
 
