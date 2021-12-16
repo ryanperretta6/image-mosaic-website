@@ -43,17 +43,22 @@ def mosaic(userID):
     folder_photos = content['folder_photos']
     tile_size = (xPixels, yPixels)
     imgByteArr = content['uploadFile'].split(',')
+    print(imgByteArr[:10])
+    for ind in range(len(imgByteArr)):
+        imgByteArr[ind] = int(imgByteArr[ind])
+    binary_main_photo = bytes(imgByteArr)
+
 
     # main_photo_path = content['main_photo_path']
 
-    # main_photo = Image.open(main_photo_path)
-    # imgByteArr = io.BytesIO()
+    # main_photo = Image.new()
+    # imgByteArr = io.BytesIO(imgByteArr)
     # main_photo.save(imgByteArr, format='png')
     # binary_main_photo = imgByteArr.getvalue()
 
     # main_photo = Image.open()
     # main_photo.save(imgByteArr, format='png')
-    binary_main_photo = imgByteArr.getvalue()
+    # binary_main_photo = imgByteArr.getvalue()
 
     # print('input Image byte array', binary_main_photo)
 
@@ -66,7 +71,7 @@ def mosaic(userID):
         img.save(imgByteArr, format='png')
         binary_folder_photos.append(imgByteArr.getvalue())
 
-    print('type of binary folders', type(binary_folder_photos), type(binary_folder_photos[0]))
+    # print('type of binary folders', type(binary_folder_photos), type(binary_folder_photos[0]))
 
     mosaic = createMosaic(
         binary_main_photo=binary_main_photo,
