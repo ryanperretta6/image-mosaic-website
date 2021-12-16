@@ -10,6 +10,7 @@ import { AuthProvider } from "../firebase/Auth";
 import PrivateRoute from "./PrivateRoute";
 import InProgress from "./InProgress";
 import About from "./About";
+import Gallery from "./Gallery"
 function App() {
     return (
         <AuthProvider>
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/signup" component={SignUp} />
                 <Route path="/inprogress" component={InProgress} />
                 <Route path="/about" component={About} />
+				<Route path='/gallery' component={Gallery} />
             </Router>
         </AuthProvider>
     );

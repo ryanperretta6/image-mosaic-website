@@ -78,7 +78,7 @@ function Account() {
 			try{
 				await client.connect();
 			}catch(e){
-				console.log("Could not connect to Mongo Database");
+				console.log(`Could not connect to Mongo Database: ${e}`);
 				return;
 			}
 			const db = client.db("CS554Final");
