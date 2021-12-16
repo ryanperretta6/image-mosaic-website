@@ -2,12 +2,14 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../firebase/Auth";
+import { ClientContext } from "../redis/Client";
 
 function UploadFile() {
     const { currentUser } = useContext(AuthContext);
     const [uploadFile, setUploadFile] = useState();
     const [uploadResponse, setUploadResponse] = useState();
     const history = useHistory();
+	const { client } = useContext(ClientContext);
 
     //readFile and getAsByteArray functions were borrowed from https://dilshankelsen.com/convert-file-to-byte-array/
 
@@ -61,6 +63,20 @@ function UploadFile() {
         
         POST`);
                 history.push("/inprogress");
+					let urls = [];
+					try{
+						if(await client.existsAsync(currentUser.uid)){
+							urls = await client.getAsync(currentUser.uid);
+						}
+					}catch(e){
+						console.log(`Error with cache: ${e}`);
+					}
+					urls.push(response.data);
+					try{
+						await client.setAsync(currentUser.uid);
+					}catch(e){
+						console.log(`Error setting the cache: ${e}`);
+					}
             })
             .catch((error) => {
                 setUploadResponse(`File uploaded FAILED

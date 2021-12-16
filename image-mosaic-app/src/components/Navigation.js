@@ -38,11 +38,6 @@ const NavigationAuth = () => {
                         Account
                     </NavLink>
                 </li>
-				<li>
-                    <NavLink exact to="/gallery" activeClassName="active">
-						Other User's Photos {/*Need a new name for this*/}
-                    </NavLink>
-                </li>
                 <li>
                     <SignOutButton />
                 </li>

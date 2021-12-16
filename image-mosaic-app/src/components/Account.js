@@ -2,8 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import SignOutButton from "./SignOut";
 import "../App.css";
 import ChangePassword from "./ChangePassword";
-import { MongoClient } from "mongodb";
 import { AuthContext } from "../firebase/Auth";
+import { ClientContext} from "../redis/Client";
+
 import {
     makeStyles,
     Card,
@@ -13,8 +14,7 @@ import {
     //CardHeader,
     Grid,
     CardActionArea,
-    Modal,
-    Button,
+    Modal
 } from "@material-ui/core";
 import axios from "axios";
 
@@ -55,10 +55,22 @@ function Account() {
     const classes = useStyles();
     const { currentUser } = useContext(AuthContext);
     let card = null;
+	const {client} = useContext(ClientContext);
+
+	
 
     useEffect(() => {
         console.log("useEffect fired");
-        function fetchImages() {
+        async function fetchImages() {
+			try{
+				if(await client.existsAsync(currentUser.uid)){
+					setUserPictures(await client.getAsync(currentUser.uid));
+					return;
+				}
+			}catch(e){
+				console.log(`Error with cache: ${e}`);
+			}
+			
             // const uri =
             //     "mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
             // const client = new MongoClient(uri, {
@@ -129,6 +141,11 @@ function Account() {
                     let pics = [];
                     for (let key of keys) pics.push(response.data[key]);
                     setUserPictures(pics);
+					try{
+						await client.setAsync(currentUser.uid);
+					}catch(e){
+						console.log(`Error setting the cache: ${e}`);
+					}
                 })
                 .catch((error) => {
                     console.log(error);
@@ -140,7 +157,7 @@ function Account() {
 
     const buildCard = (pic) => {
         return (
-            <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={pic.id}>
+            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                 <CardActionArea
                     onClick={() => {
                         setModalOpen(true);
