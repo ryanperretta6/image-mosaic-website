@@ -125,7 +125,7 @@ def mosaic(userID):
     print('result', result)
     print(f"One mosaic: {result.inserted_id}")
 
-    return "<p>Mosaic DONE!</p>"
+    return fileUrl
 
 
 def upload_file(file_name, bucket, object_name=None):
