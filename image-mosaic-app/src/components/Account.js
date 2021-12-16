@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import SignOutButton from "./SignOut";
 import "../App.css";
 import ChangePassword from "./ChangePassword";
 import {MongoClient} from "mongodb";
+import {AuthContext} from "../firebase/Auth";
 import {
     makeStyles,
     Card,
@@ -46,13 +47,34 @@ const useStyles = makeStyles({
 function Account() {
     const [userPictures, setUserPictures] = useState(undefined);
     const classes = useStyles();
+	const {currentUser} = useContext(AuthContext);
     let card = null;
 
     useEffect(() => {
         console.log("useEffect fired");
 		async function fetchImages(){
-			const uri = "mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000;
-			const client = new MongoClient(uri);
+			const uri = "mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+			const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+			/* client.connect(err => {
+				const db = client.db("CS554Final");
+				const collection = db.collection("Pictures");
+	
+				let pics = collection.find({userID: currentUser.uid}).toArray();
+	
+				let arr = [];
+	
+				for(let pic of pics){
+					//const mosiac = pic.mosiac-url (* Need to get mosiac from S3 bucket using url*);
+					let mosaicObj = {
+						id: pic._id,
+						image: pic.url
+					};
+					arr.push(mosaicObj);
+				}
+				setUserPictures(arr);
+				client.close();
+			});*/
 			try{
 				await client.connect();
 			}catch(e){
@@ -62,12 +84,34 @@ function Account() {
 			const db = client.db("CS554Final");
 			const collection = db.collection("Pictures");
 
-			const pics = await collection.find({userID: ""}).toArray();
+			let pics;
+			try{
+				pics = await collection.find({userID: currentUser.uid}).toArray();
+			}catch(e){
+				console.log("Could not access collection");
+				return;
+			}
 
+			let arr = [];
+
+			for(let pic of pics){
+				//const mosiac = pic.mosiac-url (* Need to get mosiac from S3 bucket using url*);
+				let mosaicObj = {
+					id: pic._id,
+					image: pic.url
+				};
+				arr.push(mosaicObj);
+			}
+			setUserPictures(arr);
+			try{
+				await client.close();
+			}catch(e){
+				console.log("Could not close client");
+				return;
+			}
 		}
         fetchImages();
-
-    }, []);
+    }, [currentUser.uid]);
 
     const buildCard = (pic) => {
         return (
@@ -89,7 +133,7 @@ function Account() {
     return (
         <div id="accountContainer">
             <h1>Account Page</h1>
-            <h1>Your Art</h1>
+            <h1>{currentUser.displayName}'s Art</h1>
             {card ? (
                 <Grid container className={classes.grid} spacing={3}>
                     {card}
