@@ -19,18 +19,21 @@ application = Flask(__name__)
 cors = CORS(application)
 application.config['CORS_HEADERS'] = 'Content-Type'
 
-@application.route('/user/<userID>', methods=['POST'])
+# CHECK is a user collection necessary
+@application.route('/user', methods=['POST'])
 @cross_origin()
-def createUser(userID):
-    print(userID)
-    # db = client.test
-    # client = MongoClient("mongodb://localhost:27017")
-    # print("client", client)
+def createUser():
+    EMAIL = request.form['email']
     client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
     db = client.CS554Final
     u = db.Users
-    result = u.insert_one({"userID": userID})
-    print(f"{userID}'s ID: {result.inserted_id}")
+    # checking if the user already exists in the DB
+    if(u.find({"email": EMAIL}).count() != 0):
+        print(f"user with id {EMAIL} already exists")
+        return 'exists'
+    print(f"adding new user {EMAIL}")
+    result = u.insert_one({"email": EMAIL})
+    print(f"{EMAIL}'s ID: {result.inserted_id}")
     return "<p>User DONE!</p>"
 
 @application.route('/image/<userID>', methods=['GET'])

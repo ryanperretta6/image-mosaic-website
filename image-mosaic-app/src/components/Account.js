@@ -117,7 +117,6 @@ function Account() {
             // }
             axios
                 .get(`http://localhost:5000/image/${currentUser.uid}`, null, {
-                    // CHANGE ryanp TO currentUser.uid ^^^^^
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },

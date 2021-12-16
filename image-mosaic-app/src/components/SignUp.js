@@ -3,13 +3,38 @@ import { Redirect } from "react-router-dom";
 import { doCreateUserWithEmailAndPassword } from "../firebase/FirebaseFunctions";
 import { AuthContext } from "../firebase/Auth";
 import SocialSignIn from "./SocialSignIn";
+import axios from "axios";
 function SignUp() {
     const { currentUser } = useContext(AuthContext);
     const [pwMatch, setPwMatch] = useState("");
+
+    const createMongoUser = (email) => {
+        const data = new FormData();
+        data.append("email", email);
+        axios
+            .post("localhost:5000/user", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                if (response.data === "exists") return false;
+                else return true;
+            })
+            .catch((error) => {
+                console.log(error);
+                return false;
+            });
+    };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         const { displayName, email, passwordOne, passwordTwo } =
             e.target.elements;
+        // CHECK do we need this if we have firebase already?
+        if (createMongoUser(email)) {
+            return;
+        }
         if (passwordOne.value !== passwordTwo.value) {
             setPwMatch("Passwords do not match");
             return false;
