@@ -3,52 +3,55 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 
 function UploadFile() {
-	const [uploadFile, setUploadFile] = useState();
-	const [uploadResponse, setUploadResponse] = useState();
-	const history = useHistory();
+    const [uploadFile, setUploadFile] = useState();
+    const [uploadResponse, setUploadResponse] = useState();
+    const history = useHistory();
 
-	//readFile and getAsByteArray functions were borrowed from https://dilshankelsen.com/convert-file-to-byte-array/
+    //readFile and getAsByteArray functions were borrowed from https://dilshankelsen.com/convert-file-to-byte-array/
 
-	function readFile(file){
-		return new Promise((resolve, reject) => {
-			// Create file reader
-			let reader = new FileReader()
-		
-			// Register event listeners
-			reader.addEventListener("loadend", e => resolve(e.target.result))
-			reader.addEventListener("error", reject)
-		
-			// Read file
-			reader.readAsArrayBuffer(file);
-		  })
-	}
+    function readFile(file) {
+        return new Promise((resolve, reject) => {
+            // Create file reader
+            let reader = new FileReader();
 
-	async function getAsByteArray(file){
-		return new Uint8Array(await readFile(file));
-	}
+            // Register event listeners
+            reader.addEventListener("loadend", (e) => resolve(e.target.result));
+            reader.addEventListener("error", reject);
 
-	const submitForm = (event) => {
-		event.preventDefault();
+            // Read file
+            reader.readAsArrayBuffer(file);
+        });
+    }
 
-		const dataArray = new FormData();
-		let fileByteArray;
-		try{
-			fileByteArray = getAsByteArray(uploadFile[0]);
-		}catch(e){
-			console.log("Error get byteArray");
-			return;
-		}
-		
-		dataArray.append('uploadFile', fileByteArray);
+    async function getAsByteArray(file) {
+        return new Uint8Array(await readFile(file));
+    }
 
-		axios
-			.post('/', dataArray, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
-			})
-			.then((response) => {
-				setUploadResponse(`File uploaded successfully
+    const submitForm = async (event) => {
+        event.preventDefault();
+
+        const dataArray = new FormData();
+        let fileByteArray;
+        try {
+            fileByteArray = await getAsByteArray(uploadFile[0]);
+        } catch (e) {
+            console.log("Error get byteArray");
+            return;
+        }
+
+        dataArray.append("uploadFile", fileByteArray);
+        dataArray.append("xPixels", 10);
+        dataArray.append("yPixels", 10);
+        dataArray.append("folder_photos", "");
+
+        axios
+            .post("http://localhost:5000/mosaic/abcd123", dataArray, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                setUploadResponse(`File uploaded successfully
         
         POST`);
                 history.push("/inprogress");
