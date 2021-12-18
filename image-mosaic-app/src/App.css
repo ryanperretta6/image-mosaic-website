@@ -110,6 +110,15 @@
 
 .imgModal img {
     border-radius: 15px;
-    height: 80%;
-    width: 80%;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    width: auto;
+}
+
+footer {
+    height: 50px;
+}
+footer * {
+    display: inline;
 }

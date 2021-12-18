@@ -21,6 +21,13 @@ function App() {
                         </Link>
                         <Navigation />
                     </header>
+                    <footer>
+                        <p>
+                            Credit: This website's photo library is comprised of
+                            images from{" "}
+                        </p>
+                        <a href="https://www.pexels.com/api/">Pexels API</a>
+                    </footer>
                 </div>
                 <Route exact path="/" component={CreateMosaic} />
                 {/* <PrivateRoute path="/home" component={} /> */}
