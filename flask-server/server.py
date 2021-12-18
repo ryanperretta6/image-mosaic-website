@@ -11,6 +11,7 @@ from time import gmtime, strftime
 import glob
 import uuid
 from flask_cors import CORS, cross_origin
+import requests
 
 ACCESS_KEY_ID = 'AKIATRUUVJ4RL6UU7DY5'
 SECRET_ACCESS_KEY = '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'
@@ -72,14 +73,46 @@ def mosaic(userID):
     content = request.form
     xPixels = int(content['xPixels'])
     yPixels = int(content['yPixels'])
-    folder_photos = content['folder_photos']
     tile_size = (xPixels, yPixels)
+    # get image byte array and convert to a byte string
     imgByteArr = content['uploadFile'].split(',')
-    print(imgByteArr[:10])
     for ind in range(len(imgByteArr)):
         imgByteArr[ind] = int(imgByteArr[ind])
+    # from byte array to byte string
     binary_main_photo = bytes(imgByteArr)
 
+    client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
+    db = client.CS554Final
+    m = db.Pictures
+    lib = db.PhotoLib
+
+    photo_lib = []
+    photo_results = list(lib.find({}, {'_id':0}))
+
+    for photo in photo_results:
+        response = requests.get(photo['url'])
+        # img = Image.frombytes('L', (photo['width'],photo['height']), response.content)
+        img = Image.open(io.BytesIO(response.content))
+        img = img.resize(tile_size)
+        byteArray = io.BytesIO()
+        img.save(byteArray, format='png')
+        photo_lib.append(byteArray.getvalue())
+
+    # pull out each tile image from the large folder array
+    # photo_library = []
+    # start = 0
+    # stop = int(photo_buffer_sizes[0])
+    # for i in range(len(photo_buffer_sizes)):
+    #     # extract the piece of the list and convert strings to ints
+    #     piece = list(map(lambda str: int(str),folder_photos[start:stop]))
+    #     img = Image.frombytes('P',(xPixels,yPixels), bytes(piece))
+    #     buf = io.BytesIO()
+    #     img.save(buf, format='PNG')
+    #     photo_library.append(buf.getvalue())
+    #     if i < len(photo_buffer_sizes)-1:
+    #         start += int(photo_buffer_sizes[i])
+    #         stop += int(photo_buffer_sizes[i+1])
+    
 
     # main_photo_path = content['main_photo_path']
 
@@ -94,21 +127,21 @@ def mosaic(userID):
 
     # print('input Image byte array', binary_main_photo)
 
-    tiles, binary_folder_photos = [], []
-    for file in glob.glob(folder_photos):
-        tiles.append(file)
-        img = Image.open(file)
-        img = img.resize(tile_size)
-        imgByteArr = io.BytesIO()
-        img.save(imgByteArr, format='png')
-        binary_folder_photos.append(imgByteArr.getvalue())
+    # tiles, binary_folder_photos = [], []
+    # for file in folder_photos:
+    #     tiles.append(file)
+    #     img = Image.open(file)
+    #     img = img.resize(tile_size)
+    #     imgByteArr = io.BytesIO()
+    #     img.save(imgByteArr, format='png')
+    #     binary_folder_photos.append(imgByteArr.getvalue())
 
     # print('type of binary folders', type(binary_folder_photos), type(binary_folder_photos[0]))
 
     mosaic = createMosaic(
         binary_main_photo=binary_main_photo,
         tile_size=tile_size,
-        binary_folder_photos=binary_folder_photos
+        binary_folder_photos=photo_lib
     )
 
     filename = f'{strftime("%Y-%m-%d-%H-%M-%S", gmtime())}-{userID}-{imageID}'
@@ -118,18 +151,39 @@ def mosaic(userID):
     s3.upload_fileobj(io.BytesIO(mosaic), "output-mosaics", filename, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/jpeg'})
     fileURL = bucketURLBase + filename
 
-    client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
-    db = client.CS554Final
-    m = db.Pictures
-
     # MongoDB is timing out
     
-    result = m.insert_one({"mosaic-url": fileURL, 'userID': userID})
+    result = m.insert_one({"url": fileURL, 'userID': userID})
     print('result', result)
     print(f"One mosaic: {result.inserted_id}")
 
     return "<p>Mosaic DONE!</p>"
 
+@application.route("/upload_lib", methods=['POST'])
+@cross_origin()
+def upload_photos():
+    photos = request.form['photo_lib'].split(',')
+
+    client = MongoClient("mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", serverSelectionTimeoutMS=5000)
+    db = client.CS554Final
+    lib = db.PhotoLib
+
+    photo_lib = []
+
+    for photo in photos:
+        split_str = photo.split(' ')
+        url = split_str[0]
+        width = int(split_str[1])
+        height = int(split_str[2])
+        photo_lib.append({
+            'url': url,
+            'width': width,
+            'height': height
+        })
+
+    result = lib.insert_many(photo_lib)
+    print(result)
+    return 'SUCESS'
 
 def upload_file(file_name, bucket, object_name=None):
     """Upload a file to an S3 bucket

@@ -23,7 +23,6 @@ def cleanupTiles(tiles_root):
         shutil.rmtree(tiles_root, ignore_errors=True)
 
 def createMosaic(binary_main_photo, tile_size, binary_folder_photos):
-
     tiles = []
     for file in binary_folder_photos:
         img = Image.open(io.BytesIO(file))
@@ -39,9 +38,13 @@ def createMosaic(binary_main_photo, tile_size, binary_folder_photos):
 
     # Pixelate (resize) main photo
     main_photo = Image.open(io.BytesIO(binary_main_photo))
+    main_photo = main_photo.convert('RGB')
 
     width = int(np.round(main_photo.size[0] / tile_size[0]))
     height = int(np.round(main_photo.size[1] / tile_size[1]))
+
+    print(tiles[0])
+    print(main_photo)
 
     resized_photo = main_photo.resize((width, height))
 
