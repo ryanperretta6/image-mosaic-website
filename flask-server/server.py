@@ -47,24 +47,20 @@ def getImage(userID):
     db = client.CS554Final
     pictures = db.Pictures
     # query for mosaics belonging to this user
-    results = pictures.find({"userID": userID}, {"_id": 0, "url": 1})
+    results = pictures.find({"userID": userID}, {"_id": 0, "url": 1, "imageTitle": 1})
     # get the images from the s3 bucket
     s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
-    # TEMPORARY v v
-    s3urls = {}
+    mosaics = {}
     count = 0
-    # ^^ TEMPORARY
     for obj in results:
-        # TEMPORARY CODE FOR TESTING
-        s3urls[count] = obj['url']
+        mosaics[count] = obj
         count += 1
-        # END TEMPORARY
         # get the s3 url from the result
         s3url = obj['url']
         print(f"NOTE: Getting image at URL {s3url} from s3.")
         # NEED TO GET THE IMAGE FROM THE S3 BUCKET
 
-    return s3urls
+    return mosaics
 
 @application.route('/mosaic/<userID>', methods=['POST'])
 @cross_origin()
@@ -73,6 +69,7 @@ def mosaic(userID):
     content = request.form
     xPixels = int(content['xPixels'])
     yPixels = int(content['yPixels'])
+    image_title = content['imageTitle']
     tile_size = (xPixels, yPixels)
     # get image byte array and convert to a byte string
     imgByteArr = content['uploadFile'].split(',')
@@ -98,46 +95,6 @@ def mosaic(userID):
         img.save(byteArray, format='png')
         photo_lib.append(byteArray.getvalue())
 
-    # pull out each tile image from the large folder array
-    # photo_library = []
-    # start = 0
-    # stop = int(photo_buffer_sizes[0])
-    # for i in range(len(photo_buffer_sizes)):
-    #     # extract the piece of the list and convert strings to ints
-    #     piece = list(map(lambda str: int(str),folder_photos[start:stop]))
-    #     img = Image.frombytes('P',(xPixels,yPixels), bytes(piece))
-    #     buf = io.BytesIO()
-    #     img.save(buf, format='PNG')
-    #     photo_library.append(buf.getvalue())
-    #     if i < len(photo_buffer_sizes)-1:
-    #         start += int(photo_buffer_sizes[i])
-    #         stop += int(photo_buffer_sizes[i+1])
-    
-
-    # main_photo_path = content['main_photo_path']
-
-    # main_photo = Image.new()
-    # imgByteArr = io.BytesIO(imgByteArr)
-    # main_photo.save(imgByteArr, format='png')
-    # binary_main_photo = imgByteArr.getvalue()
-
-    # main_photo = Image.open()
-    # main_photo.save(imgByteArr, format='png')
-    # binary_main_photo = imgByteArr.getvalue()
-
-    # print('input Image byte array', binary_main_photo)
-
-    # tiles, binary_folder_photos = [], []
-    # for file in folder_photos:
-    #     tiles.append(file)
-    #     img = Image.open(file)
-    #     img = img.resize(tile_size)
-    #     imgByteArr = io.BytesIO()
-    #     img.save(imgByteArr, format='png')
-    #     binary_folder_photos.append(imgByteArr.getvalue())
-
-    # print('type of binary folders', type(binary_folder_photos), type(binary_folder_photos[0]))
-
     mosaic = createMosaic(
         binary_main_photo=binary_main_photo,
         tile_size=tile_size,
@@ -153,7 +110,7 @@ def mosaic(userID):
 
     # MongoDB is timing out
     
-    result = m.insert_one({"url": fileURL, 'userID': userID})
+    result = m.insert_one({"url": fileURL, 'userID': userID, 'imageTitle': image_title})
     print('result', result)
     print(f"One mosaic: {result.inserted_id}")
 
