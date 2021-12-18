@@ -15,7 +15,9 @@ function UploadFile() {
     const { currentUser } = useContext(AuthContext);
     const [uploadFile, setUploadFile] = useState();
     const [uploadResponse, setUploadResponse] = useState();
-    const [photoLibrary, setPhotoLibrary] = useState();
+    const [imageTitle, setImageTitle] = useState("");
+    const [errorImageTitle, setErrorImageTitle] = useState(false);
+    const [errorFile, setErrorFile] = useState(false);
     const history = useHistory();
 
     //readFile and getAsByteArray functions were borrowed from https://dilshankelsen.com/convert-file-to-byte-array/
@@ -42,44 +44,31 @@ function UploadFile() {
 
         const dataArray = new FormData();
 
+        if (imageTitle.trim() === "") {
+            setErrorImageTitle(true);
+            return;
+        }
+        setErrorImageTitle(false);
+
         // turn uploaded image to byte array
         let fileByteArray;
         try {
             fileByteArray = await getAsByteArray(uploadFile[0]);
         } catch (e) {
             console.log("Error get byteArray");
+            setErrorFile(true);
             return;
         }
+        setErrorFile(false);
 
-        // // turn photo library to all byte arrays and unzip
-        // let photoLibraryZip = photoLibrary[0];
-        // if (photoLibraryZip.type !== "application/x-zip-compressed") {
-        //     console.log("Error file must be type zip");
-        //     return;
-        // }
-        // // unzip
-        // try {
-        //     photoLibraryZip = await zip.loadAsync(photoLibraryZip);
-        // } catch (e) {
-        //     console.log("Could not unzip");
-        //     return;
-        // }
-        // console.log(photoLibraryZip);
-        // let photo_library = [];
-        // let photo_buffer_size = [];
-        // for (let photoName of Object.keys(photoLibraryZip.files)) {
-        //     photo_library.push(
-        //         photoLibraryZip.files[photoName]._data.compressedContent
-        //     );
-        //     photo_buffer_size.push(
-        //         photoLibraryZip.files[photoName]._data.compressedSize
-        //     );
-        // }
+        window.alert(
+            "Image submitted! Please check account page later for result."
+        );
 
+        dataArray.append("imageTitle", imageTitle);
         dataArray.append("uploadFile", fileByteArray);
         dataArray.append("xPixels", 10);
         dataArray.append("yPixels", 10);
-        // dataArray.append("image_sizes", photo_buffer_size);
 
         axios
             .post(
@@ -108,6 +97,18 @@ function UploadFile() {
         <div className="App">
             <form onSubmit={submitForm}>
                 <br />
+                {errorImageTitle ? (
+                    <p class="error">Please enter a title for your image.</p>
+                ) : errorFile ? (
+                    <p class="error">Please choose an image.</p>
+                ) : null}
+                <label for="image-title">Image Title:</label>
+                <input
+                    id="image-title"
+                    type="text"
+                    placeholder="Enter image title here"
+                    onChange={(e) => setImageTitle(e.target.value)}
+                />
                 <input
                     type="file"
                     onChange={(e) => setUploadFile(e.target.files)}

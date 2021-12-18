@@ -15,6 +15,7 @@ import {
     CardActionArea,
     Modal,
     Button,
+    CardContent,
 } from "@material-ui/core";
 import axios from "axios";
 
@@ -59,62 +60,6 @@ function Account() {
     useEffect(() => {
         console.log("useEffect fired");
         function fetchImages() {
-            // const uri =
-            //     "mongodb+srv://tmarin:Z5Aj3BlYsC680aw0@cluster0.hltjt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-            // const client = new MongoClient(uri, {
-            //     useNewUrlParser: true,
-            //     useUnifiedTopology: true,
-            // });
-            /* client.connect(err => {
-				const db = client.db("CS554Final");
-				const collection = db.collection("Pictures");
-	
-				let pics = collection.find({userID: currentUser.uid}).toArray();
-	
-				let arr = [];
-	
-				for(let pic of pics){
-					//const mosiac = pic.mosiac-url (* Need to get mosiac from S3 bucket using url*);
-					let mosaicObj = {
-						id: pic._id,
-						image: pic.url
-					};
-					arr.push(mosaicObj);
-				}
-				setUserPictures(arr);
-				client.close();
-			});*/
-            // try{
-            // 	await client.connect();
-            // }catch(e){
-            // 	console.log("Could not connect to Mongo Database");
-            // 	return;
-            // }
-            // const db = client.db("CS554Final");
-            // const collection = db.collection("Pictures");
-            // let pics;
-            // try{
-            // 	pics = await collection.find({userID: currentUser.uid}).toArray();
-            // }catch(e){
-            // 	console.log("Could not access collection");
-            // 	return;
-            // }
-            // let arr = [];
-            // for(let pic of pics){
-            // 	//const mosiac = pic.mosiac-url (* Need to get mosiac from S3 bucket using url*);
-            // 	let mosaicObj = {
-            // 		id: pic._id,
-            // 		image: pic.url
-            // 	};
-            // 	arr.push(mosaicObj);
-            // }
-            // setUserPictures(arr);
-            // try{
-            // 	await client.close();
-            // }catch(e){
-            // 	console.log("Could not close client");
-            // 	return;
-            // }
             axios
                 .get(`http://localhost:5000/image/${currentUser.uid}`, null, {
                     headers: {
@@ -143,17 +88,17 @@ function Account() {
                 <CardActionArea
                     onClick={() => {
                         setModalOpen(true);
-                        setModalImageSrc(pic);
+                        setModalImageSrc(pic.url);
                     }}
                 >
                     <Card className={classes.card} variant="outlined">
                         <CardMedia
                             className={classes.media}
                             component="img"
-                            // image={pic.image}
-                            src={pic} // CHANGE this when the real images are here
-                            title="Mosiac image"
+                            src={pic.url}
+                            title={pic.imageTitle}
                         />
+                        <CardContent>{pic.imageTitle}</CardContent>
                     </Card>
                 </CardActionArea>
             </Grid>
@@ -179,6 +124,7 @@ function Account() {
             >
                 <img src={modalImageSrc} />
             </Modal>
+            <br />
             <ChangePassword />
             <SignOutButton />
         </div>

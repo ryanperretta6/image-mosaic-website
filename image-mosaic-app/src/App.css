@@ -116,6 +116,15 @@
     width: auto;
 }
 
+.error {
+    color: rgb(150, 1, 1);
+}
+
+#image-title {
+    width: 250px;
+    margin-right: 20px;
+}
+
 footer {
     height: 50px;
 }
