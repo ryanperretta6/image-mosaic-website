@@ -50,6 +50,12 @@ function UploadFile() {
         }
         setErrorImageTitle(false);
 
+        // verify that the upoaded file is an image
+        if (!uploadFile[0].type.startsWith("image")) {
+            setErrorFile(true);
+            return;
+        }
+
         // turn uploaded image to byte array
         let fileByteArray;
         try {
@@ -99,11 +105,13 @@ function UploadFile() {
             <form onSubmit={submitForm}>
                 <br />
                 {errorImageTitle ? (
-                    <p class="error">Please enter a title for your image.</p>
+                    <p className="error">
+                        Please enter a title for your image.
+                    </p>
                 ) : errorFile ? (
-                    <p class="error">Please choose an image.</p>
+                    <p className="error">Please choose an image.</p>
                 ) : null}
-                <label for="image-title">Image Title:</label>
+                <label htmlFor="image-title">Image Title:</label>
                 <input
                     id="image-title"
                     type="text"

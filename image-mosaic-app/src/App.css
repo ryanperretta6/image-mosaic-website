@@ -131,3 +131,13 @@ footer {
 footer * {
     display: inline;
 }
+
+h2 {
+    margin-left: 50px;
+}
+
+#about {
+    margin: 0px 100px;
+    font-size: larger;
+    text-align: center;
+}
