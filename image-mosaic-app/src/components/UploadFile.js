@@ -62,13 +62,13 @@ function UploadFile() {
         setErrorFile(false);
 
         window.alert(
-            "Image submitted! Please check account page later for result."
+            "Image submitted! Please check in a few minutes for the output."
         );
 
         dataArray.append("imageTitle", imageTitle);
         dataArray.append("uploadFile", fileByteArray);
-        dataArray.append("xPixels", 10);
-        dataArray.append("yPixels", 10);
+        dataArray.append("xPixels", 5);
+        dataArray.append("yPixels", 5);
 
         axios
             .post(
@@ -84,7 +84,8 @@ function UploadFile() {
                 setUploadResponse(`File uploaded successfully
         
         POST`);
-                history.push("/inprogress");
+                if (window.confirm("Mosaic finsihed! See the results?"))
+                    history.push("/account");
             })
             .catch((error) => {
                 setUploadResponse(`File uploaded FAILED

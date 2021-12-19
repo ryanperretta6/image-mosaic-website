@@ -67,16 +67,14 @@ function Account() {
                     },
                 })
                 .then((response) => {
-                    console.log(response);
-                    console.log("WOO");
                     const keys = Object.keys(response.data);
+                    console.log(`Retrieved ${keys.length} image mosaics`);
                     let pics = [];
                     for (let key of keys) pics.push(response.data[key]);
-                    setUserPictures(pics);
+                    if (pics.length !== 0) setUserPictures(pics);
                 })
                 .catch((error) => {
                     console.log(error);
-                    console.log("BOO");
                 });
         }
         fetchImages();
