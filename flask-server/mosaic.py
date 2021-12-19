@@ -42,9 +42,6 @@ def createMosaic(binary_main_photo, tile_size, binary_folder_photos):
     width = int(np.round(main_photo.size[0] / tile_size[0]))
     height = int(np.round(main_photo.size[1] / tile_size[1]))
 
-    print(tiles[0])
-    print(main_photo)
-
     resized_photo = main_photo.resize((width, height))
 
     # Find closest tile photo for every pixel

@@ -51,7 +51,11 @@ function UploadFile() {
         setErrorImageTitle(false);
 
         // verify that the upoaded file is an image
-        if (uploadFile === undefined || !imageCheck(uploadFile[0].type)) {
+        if (
+            uploadFile === undefined ||
+            uploadFile.length === 0 ||
+            !imageCheck(uploadFile[0].type)
+        ) {
             setErrorFile(true);
             return;
         }
@@ -73,8 +77,8 @@ function UploadFile() {
 
         dataArray.append("imageTitle", imageTitle);
         dataArray.append("uploadFile", fileByteArray);
-        dataArray.append("xPixels", 5);
-        dataArray.append("yPixels", 5);
+        dataArray.append("xPixels", 20);
+        dataArray.append("yPixels", 20);
 
         axios
             .post(
