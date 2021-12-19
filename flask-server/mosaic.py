@@ -1,11 +1,10 @@
-import glob
+
 from PIL import Image
 from scipy import spatial
 import numpy as np
 import io
 import os
 import shutil
-import boto3
 
 ACCESS_KEY_ID = 'AKIATRUUVJ4RL6UU7DY5'
 SECRET_ACCESS_KEY = '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'

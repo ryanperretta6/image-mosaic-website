@@ -8,7 +8,6 @@ from botocore.exceptions import ClientError
 import os
 from pymongo import MongoClient
 from time import gmtime, strftime
-import glob
 import uuid
 from flask_cors import CORS, cross_origin
 import requests
