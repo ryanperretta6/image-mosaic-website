@@ -3,6 +3,7 @@ import SignOutButton from "./SignOut";
 import "../App.css";
 import ChangePassword from "./ChangePassword";
 import { AuthContext } from "../firebase/Auth";
+
 import {
     makeStyles,
     Card,
@@ -53,6 +54,8 @@ function Account() {
     const { currentUser } = useContext(AuthContext);
     let card = null;
 
+	
+
     useEffect(() => {
         console.log("useEffect fired");
         function fetchImages() {
@@ -73,6 +76,7 @@ function Account() {
                 .catch((error) => {
                     console.log(error);
                 });
+				
         }
         fetchImages();
     }, [currentUser.uid]);

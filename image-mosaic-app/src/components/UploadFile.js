@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../firebase/Auth";
+import imageCheck from "../imageCheck";
 
 // Was used to import the photo library, but unused now
 // import { createClient } from "pexels";
@@ -41,7 +42,6 @@ function UploadFile() {
 
     const submitForm = async (event) => {
         event.preventDefault();
-
         const dataArray = new FormData();
 
         if (imageTitle.trim() === "") {
@@ -98,6 +98,8 @@ function UploadFile() {
 
         POST`);
             });
+			
+		
     };
 
     return (

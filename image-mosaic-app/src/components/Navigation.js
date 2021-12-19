@@ -66,6 +66,12 @@ const NavigationNonAuth = () => {
                         Sign-In
                     </NavLink>
                 </li>
+
+				<li>
+                    <NavLink exact to="/about" activeClassName="active">
+                        About our App
+                    </NavLink>
+                </li>
             </ul>
         </nav>
     );
