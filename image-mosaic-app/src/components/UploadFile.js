@@ -51,7 +51,7 @@ function UploadFile() {
         setErrorImageTitle(false);
 
         // verify that the upoaded file is an image
-        if (!uploadFile[0].type.startsWith("image")) {
+        if (imageCheck(uploadFile[0].type)) {
             setErrorFile(true);
             return;
         }
@@ -98,8 +98,6 @@ function UploadFile() {
 
         POST`);
             });
-			
-		
     };
 
     return (

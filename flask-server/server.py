@@ -115,7 +115,7 @@ def mosaic(userID):
     print('result', result)
     print(f"One mosaic: {result.inserted_id}")
 
-    return fileUrl
+    return fileURL
 
 @application.route("/upload_lib", methods=['POST'])
 @cross_origin()
