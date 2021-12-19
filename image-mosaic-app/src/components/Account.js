@@ -2,19 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import SignOutButton from "./SignOut";
 import "../App.css";
 import ChangePassword from "./ChangePassword";
-import { MongoClient } from "mongodb";
 import { AuthContext } from "../firebase/Auth";
 import {
     makeStyles,
     Card,
-    //CardContent,
     CardMedia,
-    //Typography,
-    //CardHeader,
     Grid,
     CardActionArea,
     Modal,
-    Button,
     CardContent,
 } from "@material-ui/core";
 import axios from "axios";
@@ -53,6 +48,7 @@ function Account() {
     const [userPictures, setUserPictures] = useState(undefined);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalImageSrc, setModalImageSrc] = useState();
+    const [modalAlt, setModalAlt] = useState();
     const classes = useStyles();
     const { currentUser } = useContext(AuthContext);
     let card = null;
@@ -71,6 +67,7 @@ function Account() {
                     console.log(`Retrieved ${keys.length} image mosaics`);
                     let pics = [];
                     for (let key of keys) pics.push(response.data[key]);
+                    pics.reverse();
                     if (pics.length !== 0) setUserPictures(pics);
                 })
                 .catch((error) => {
@@ -82,23 +79,25 @@ function Account() {
 
     const buildCard = (pic) => {
         return (
-            <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={pic.id}>
-                <CardActionArea
-                    onClick={() => {
-                        setModalOpen(true);
-                        setModalImageSrc(pic.url);
-                    }}
-                >
-                    <Card className={classes.card} variant="outlined">
+            <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={pic.key}>
+                <Card className={classes.card} variant="outlined">
+                    <CardActionArea
+                        onClick={() => {
+                            setModalOpen(true);
+                            setModalImageSrc(pic.url);
+                            setModalAlt(pic.imageTitle);
+                        }}
+                    >
                         <CardMedia
                             className={classes.media}
                             component="img"
                             src={pic.url}
                             title={pic.imageTitle}
+                            alt={pic.imageTitle}
                         />
-                        <CardContent>{pic.imageTitle}</CardContent>
-                    </Card>
-                </CardActionArea>
+                    </CardActionArea>
+                    <CardContent>{pic.imageTitle}</CardContent>
+                </Card>
             </Grid>
         );
     };
@@ -107,7 +106,12 @@ function Account() {
 
     return (
         <div id="accountContainer">
-            <h1>{currentUser.displayName}'s Art</h1>
+            <h1>
+                {currentUser.displayName
+                    ? currentUser.displayName
+                    : currentUser.email}
+                's Art
+            </h1>
             {card ? (
                 <Grid container className={classes.grid} spacing={3}>
                     {card}
@@ -120,7 +124,7 @@ function Account() {
                 open={modalOpen}
                 onClick={() => setModalOpen(false)}
             >
-                <img src={modalImageSrc} />
+                <img src={modalImageSrc} alt={modalAlt} />
             </Modal>
             <br />
             <ChangePassword />

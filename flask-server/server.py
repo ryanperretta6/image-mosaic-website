@@ -53,6 +53,7 @@ def getImage(userID):
     mosaics = {}
     count = 0
     for obj in results:
+        obj['key'] = count
         mosaics[count] = obj
         count += 1
         # get the s3 url from the result

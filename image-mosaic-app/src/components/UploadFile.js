@@ -2,14 +2,14 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../firebase/Auth";
-// import * as zip from "@zip.js/zip.js";
-import zip from "jszip";
-import { createClient } from "pexels";
-import { getPhotos } from "../pexels";
 
-const client = createClient(
-    "563492ad6f9170000100000107530903353e40b79a65a772a9ffb7db"
-);
+// Was used to import the photo library, but unused now
+// import { createClient } from "pexels";
+// import { getPhotos } from "../pexels";
+
+// const client = createClient(
+//     "563492ad6f9170000100000107530903353e40b79a65a772a9ffb7db"
+// );
 
 function UploadFile() {
     const { currentUser } = useContext(AuthContext);
