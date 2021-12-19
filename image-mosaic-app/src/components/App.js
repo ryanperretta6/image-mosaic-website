@@ -10,11 +10,9 @@ import { AuthProvider } from "../firebase/Auth";
 import PrivateRoute from "./PrivateRoute";
 import InProgress from "./InProgress";
 import About from "./About";
-import {ClientProvider} from "../redis/Client";
 function App() {
     return (
         <AuthProvider>
-			<ClientProvider>
 				<Router>
 					<div className="App">
 						<header className="App-header">
@@ -32,7 +30,6 @@ function App() {
 					<Route path="/inprogress" component={InProgress} />
 					<Route path="/about" component={About} />
 				</Router>
-			</ClientProvider>
         </AuthProvider>
     );
 }

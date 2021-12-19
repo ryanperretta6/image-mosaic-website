@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
         firebaseApp.auth().onAuthStateChanged((user) => {
             setCurrentUser(user);
             setLoadingUser(false);
+
         });
     }, []);
 
