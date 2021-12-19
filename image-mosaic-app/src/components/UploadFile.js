@@ -51,7 +51,7 @@ function UploadFile() {
         setErrorImageTitle(false);
 
         // verify that the upoaded file is an image
-        if (imageCheck(uploadFile[0].type)) {
+        if (uploadFile === undefined || !imageCheck(uploadFile[0].type)) {
             setErrorFile(true);
             return;
         }
