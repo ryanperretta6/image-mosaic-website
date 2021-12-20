@@ -1,6 +1,7 @@
 {
     "name": "firebase-auth",
     "version": "0.1.0",
+    "author": "Luke McEvoy the magnificent, Ryan Perretta the distinguished, Tayler Marin the exquisite",
     "private": true,
     "dependencies": {
         "@material-ui/core": "^4.12.3",
