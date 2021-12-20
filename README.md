@@ -5,9 +5,7 @@ How to run the App:
 
 We have two parts that need to be started for our application:
 
-1. Mosaic Server:
-
-  Before you can run the server you need to install a few python packages for it to work
+1. Mosaic Server: Before you can run the server you need to install a few python packages for it to work
     Packages:
      -  Flask
      -  boto3
