@@ -32,4 +32,7 @@ We have two parts that need to be started for our application:
   That is pretty simple, from the react folder just run ```npm i``` and then ```npm start```
   Once server is ready, you need to sign-up/sign-in to submit an image and create a mosaic.
   
+3. Customize
+
+    If you would like to alter the tile size and make the mosaic images seem more high resolution, change the x and y pixels in the UploadFile component lines 80 + 81.
   ENJOY!
